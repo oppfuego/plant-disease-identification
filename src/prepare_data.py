@@ -54,7 +54,6 @@ def split_files(files: list[Path]) -> tuple[list[Path], list[Path], list[Path]]:
     total = len(files)
     train_count = int(total * TRAIN_RATIO)
     val_count = int(total * VAL_RATIO)
-    test_count = total - train_count - val_count
 
     train_files = files[:train_count]
     val_files = files[train_count:train_count + val_count]
@@ -126,6 +125,10 @@ def prepare_split() -> None:
     validate_directory(SOURCE_DIR, "Source dataset")
 
     class_names = get_class_names(SOURCE_DIR)
+
+    if not class_names:
+        raise ValueError(f"No class folders found in source directory: {SOURCE_DIR}")
+
     if len(class_names) != NUM_CLASSES:
         raise ValueError(
             f"Expected {NUM_CLASSES} classes, but found {len(class_names)} in {SOURCE_DIR}"
@@ -149,6 +152,15 @@ def prepare_split() -> None:
             continue
 
         train_files, val_files, test_files = split_files(image_files)
+
+        if len(train_files) == 0:
+            raise ValueError(
+                f"Class '{class_name}' has too few images for train split: {len(image_files)}"
+            )
+        if len(val_files) == 0:
+            print(f"Warning: class '{class_name}' has 0 images in val split.")
+        if len(test_files) == 0:
+            print(f"Warning: class '{class_name}' has 0 images in test split.")
 
         copy_files(train_files, TRAIN_DIR / class_name)
         copy_files(val_files, VAL_DIR / class_name)
@@ -176,7 +188,7 @@ def validate_prepared_dataset() -> None:
 
     if len(train_classes) != NUM_CLASSES:
         raise ValueError(
-            f"Expected {NUM_CLASSES} classes, but found {len(train_classes)}."
+            f"Expected {NUM_CLASSES} classes in prepared dataset, but found {len(train_classes)}."
         )
 
     train_counts = count_images_in_split(TRAIN_DIR)
