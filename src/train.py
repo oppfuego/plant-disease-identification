@@ -15,7 +15,7 @@ from src.utils.config import (
 
 
 def main() -> None:
-    print("Starting training...")
+    print("Starting optimized training...")
     print(f"Dataset: {DATASET_DIR}")
     print(f"Model weights: {YOLO_MODEL_WEIGHTS}")
     print(f"Epochs: {EPOCHS}")
@@ -34,13 +34,38 @@ def main() -> None:
         lr0=LEARNING_RATE,
         project=str(RUNS_DIR),
         name=EXPERIMENT_NAME,
-        verbose=True,
         device=DEVICE,
-        cache=True,
-        workers=2,
         seed=SEED,
         pretrained=True,
         val=True,
+        verbose=True,
+
+        cache=False,
+        workers=2,
+
+        optimizer="AdamW",
+        cos_lr=True,
+        patience=12,
+        weight_decay=0.001,
+        dropout=0.08,
+
+        degrees=15.0,
+        translate=0.12,
+        scale=0.35,
+        shear=3.0,
+        perspective=0.0005,
+
+        fliplr=0.5,
+        flipud=0.0,
+
+        hsv_h=0.015,
+        hsv_s=0.55,
+        hsv_v=0.35,
+
+        erasing=0.18,
+
+        mixup=0.10,
+        cutmix=0.10,
     )
 
     print("\nTraining completed successfully.")

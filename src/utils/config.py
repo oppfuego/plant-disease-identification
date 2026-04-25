@@ -16,15 +16,17 @@ MODELS_DIR = BASE_DIR / "models"
 RUNS_DIR = BASE_DIR / "runs"
 
 NUM_CLASSES = 27
-IMG_SIZE = 224
+
+IMG_SIZE = 384
 BATCH_SIZE = 16
-EPOCHS = 15
-LEARNING_RATE = 1e-3
+EPOCHS = 40
+LEARNING_RATE = 2e-4
+
 SEED = 42
 TOP_K = 3
 
-YOLO_MODEL_WEIGHTS = "yolo11n-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_plantdoc"
+YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
+EXPERIMENT_NAME = "plant_disease_cls_plantdoc_final"
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
