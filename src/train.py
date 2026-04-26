@@ -45,9 +45,9 @@ def main() -> None:
 
         optimizer="AdamW",
         cos_lr=True,
-        patience=6,
+        patience=8,
         weight_decay=0.0005,
-        dropout=0.10,
+        dropout=0.05,
 
         degrees=8.0,
         translate=0.05,

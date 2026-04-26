@@ -20,7 +20,7 @@ NUM_CLASSES = 27
 
 IMG_SIZE = 448
 BATCH_SIZE = 16
-EPOCHS = 15
+EPOCHS = 30
 LEARNING_RATE = 3e-4
 
 SEED = 42
@@ -31,7 +31,7 @@ VAL_RATIO = 0.1
 TEST_RATIO = 0.2
 
 YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_merged_v1_15ep"
+EXPERIMENT_NAME = "plant_disease_cls_merged_v2_30ep"
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
