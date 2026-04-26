@@ -1,0 +1,2 @@
+accuracy,precision_macro,recall_macro,f1_macro,precision_weighted,recall_weighted,f1_weighted,top1_accuracy,top3_accuracy,roc_num_present_classes,macro_auc,weighted_auc,micro_auc,macro_curve_auc,min_auc,max_auc,evaluation_split,num_samples,num_present_classes
+0.75,0.754063685889673,0.7498806056698544,0.7474131951284906,0.7566823207223807,0.75,0.7497002081367828,0.75,0.944327731092437,27,0.9839651056638355,0.9803471394876064,0.9870368679145867,0.9841512607880397,0.9013681025943081,0.9998823875330785,test,952,27

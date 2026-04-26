@@ -31,8 +31,7 @@ VAL_RATIO = 0.1
 TEST_RATIO = 0.2
 
 YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_merged_v1_15ep"
-
+EXPERIMENT_NAME = "plant_disease_cls_merged_v1_15ep-2"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
