@@ -15,7 +15,7 @@ from src.utils.config import (
 
 
 def main() -> None:
-    print("Starting optimized training...")
+    print("Starting merged-dataset training...")
     print(f"Dataset: {DATASET_DIR}")
     print(f"Model weights: {YOLO_MODEL_WEIGHTS}")
     print(f"Epochs: {EPOCHS}")
@@ -40,32 +40,32 @@ def main() -> None:
         val=True,
         verbose=True,
 
-        cache=False,
-        workers=2,
+        cache=True,
+        workers=4,
 
         optimizer="AdamW",
         cos_lr=True,
-        patience=12,
-        weight_decay=0.001,
-        dropout=0.08,
+        patience=6,
+        weight_decay=0.0005,
+        dropout=0.10,
 
-        degrees=15.0,
-        translate=0.12,
-        scale=0.35,
-        shear=3.0,
-        perspective=0.0005,
+        degrees=8.0,
+        translate=0.05,
+        scale=0.20,
+        shear=1.0,
+        perspective=0.0,
 
         fliplr=0.5,
         flipud=0.0,
 
         hsv_h=0.015,
-        hsv_s=0.55,
-        hsv_v=0.35,
+        hsv_s=0.35,
+        hsv_v=0.20,
 
-        erasing=0.18,
+        erasing=0.10,
 
-        mixup=0.10,
-        cutmix=0.10,
+        mixup=0.0,
+        cutmix=0.0,
     )
 
     print("\nTraining completed successfully.")

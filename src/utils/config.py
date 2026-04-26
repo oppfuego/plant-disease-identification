@@ -7,6 +7,7 @@ DATA_DIR = BASE_DIR / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 
 DATASET_DIR = RAW_DATA_DIR / "plant-dataset"
+SOURCE_DIR = RAW_DATA_DIR / "plant-source"
 
 TRAIN_DIR = DATASET_DIR / "train"
 VAL_DIR = DATASET_DIR / "val"
@@ -17,16 +18,20 @@ RUNS_DIR = BASE_DIR / "runs"
 
 NUM_CLASSES = 27
 
-IMG_SIZE = 384
+IMG_SIZE = 448
 BATCH_SIZE = 16
-EPOCHS = 40
-LEARNING_RATE = 2e-4
+EPOCHS = 15
+LEARNING_RATE = 3e-4
 
 SEED = 42
 TOP_K = 3
 
+TRAIN_RATIO = 0.7
+VAL_RATIO = 0.1
+TEST_RATIO = 0.2
+
 YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_plantdoc_final"
+EXPERIMENT_NAME = "plant_disease_cls_merged_v1_15ep"
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
@@ -37,7 +42,6 @@ def get_device() -> str:
     if torch.backends.mps.is_available():
         return "mps"
     return "cpu"
-
 
 DEVICE = get_device()
 
