@@ -193,7 +193,8 @@ def evaluate_model() -> None:
         pred_class_id = int(np.argmax(prob_vector))
 
         sorted_indices = np.argsort(prob_vector)[::-1]
-        top_indices = sorted_indices[:max(TOP_K, 5)].tolist()
+        # Keep enough predictions for top-3 reporting while respecting configured TOP_K.
+        top_indices = sorted_indices[:max(TOP_K, 3)].tolist()
 
         y_true.append(true_class_id)
         y_pred.append(pred_class_id)

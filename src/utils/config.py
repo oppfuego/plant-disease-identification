@@ -18,10 +18,14 @@ RUNS_DIR = BASE_DIR / "runs"
 
 NUM_CLASSES = 27
 
-IMG_SIZE = 448
+IMG_SIZE = 512
 BATCH_SIZE = 16
-EPOCHS = 15
-LEARNING_RATE = 3e-4
+EPOCHS = 20
+LEARNING_RATE = 2e-4
+WORKERS = 4
+PATIENCE = 7
+DROPOUT = 0.10
+WEIGHT_DECAY = 5e-4
 
 SEED = 42
 TOP_K = 3
@@ -31,7 +35,7 @@ VAL_RATIO = 0.1
 TEST_RATIO = 0.2
 
 YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_merged_v1_15ep-2"
+EXPERIMENT_NAME = "plant_disease_cls_merged_v3_20ep_512"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 

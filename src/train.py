@@ -6,6 +6,10 @@ from src.utils.config import (
     BATCH_SIZE,
     EPOCHS,
     LEARNING_RATE,
+    WORKERS,
+    PATIENCE,
+    DROPOUT,
+    WEIGHT_DECAY,
     RUNS_DIR,
     EXPERIMENT_NAME,
     YOLO_MODEL_WEIGHTS,
@@ -22,6 +26,7 @@ def main() -> None:
     print(f"Batch size: {BATCH_SIZE}")
     print(f"Image size: {IMG_SIZE}")
     print(f"Learning rate: {LEARNING_RATE}")
+    print(f"Patience: {PATIENCE}")
     print(f"Device: {DEVICE}")
 
     model = YOLO(YOLO_MODEL_WEIGHTS)
@@ -39,15 +44,16 @@ def main() -> None:
         pretrained=True,
         val=True,
         verbose=True,
+        augment=True,
 
         cache=True,
-        workers=4,
+        workers=WORKERS,
 
         optimizer="AdamW",
         cos_lr=True,
-        patience=6,
-        weight_decay=0.0005,
-        dropout=0.10,
+        patience=PATIENCE,
+        weight_decay=WEIGHT_DECAY,
+        dropout=DROPOUT,
 
         degrees=8.0,
         translate=0.05,
