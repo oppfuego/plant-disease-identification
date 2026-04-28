@@ -10,16 +10,13 @@
     "Corn leaf blight",
     "Corn rust leaf",
     "Peach leaf",
-    "Potato leaf early blight",
     "Potato leaf late blight",
     "Raspberry leaf",
     "Soyabean leaf",
     "Squash Powdery mildew leaf",
     "Strawberry leaf",
-    "Tomato Early blight leaf",
     "Tomato Septoria leaf spot",
     "Tomato leaf",
-    "Tomato leaf bacterial spot",
     "Tomato leaf late blight",
     "Tomato leaf mosaic virus",
     "Tomato leaf yellow virus",
@@ -27,3 +24,4 @@
     "grape leaf",
     "grape leaf black rot"
 ]
+

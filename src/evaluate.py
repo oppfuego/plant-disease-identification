@@ -36,6 +36,14 @@ OUTPUT_DIR = RUNS_DIR / EXPERIMENT_NAME / "evaluation"
 
 EVAL_SPLIT = "test"
 
+# Тимчасово виключені класи для тестового rerun evaluate.
+# EXCLUDED_CLASSES = {
+#     "Potato leaf early blight",
+#     "Tomato Early blight leaf",
+#     "Tomato leaf bacterial spot",
+# }
+EXCLUDED_CLASSES: set[str] = set()
+
 
 def load_class_names(path: Path) -> list[str]:
     if not path.exists():
@@ -48,6 +56,18 @@ def load_class_names(path: Path) -> list[str]:
         raise ValueError("Invalid class names file format.")
 
     return class_names
+
+
+def load_model_class_names(model: YOLO) -> list[str]:
+    names = model.names
+
+    if isinstance(names, dict):
+        return [names[i] for i in sorted(names)]
+
+    if isinstance(names, list):
+        return names
+
+    raise ValueError("Unsupported model.names format.")
 
 
 def get_split_dir() -> Path:
@@ -73,6 +93,25 @@ def collect_samples(split_dir: Path, class_names: list[str]) -> list[tuple[Path,
         for image_path in sorted(class_dir.iterdir()):
             if image_path.is_file() and image_path.suffix.lower() in IMAGE_EXTENSIONS:
                 samples.append((image_path, class_id))
+
+    return samples
+
+
+def collect_named_samples(split_dir: Path, class_names: list[str]) -> list[tuple[Path, str]]:
+    samples: list[tuple[Path, str]] = []
+
+    for class_name in class_names:
+        class_dir = split_dir / class_name
+
+        if not class_dir.exists():
+            continue
+
+        if not class_dir.is_dir():
+            raise NotADirectoryError(f"Path is not a directory: {class_dir}")
+
+        for image_path in sorted(class_dir.iterdir()):
+            if image_path.is_file() and image_path.suffix.lower() in IMAGE_EXTENSIONS:
+                samples.append((image_path, class_name))
 
     return samples
 
@@ -142,7 +181,8 @@ def plot_confusion_matrix(cm_df: pd.DataFrame, output_path: Path, title: str) ->
 def evaluate_model() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    class_names = load_class_names(CLASS_NAMES_PATH)
+    configured_class_names = load_class_names(CLASS_NAMES_PATH)
+    # class_names = load_class_names(CLASS_NAMES_PATH)
 
     if not BEST_MODEL_PATH.exists():
         raise FileNotFoundError(f"Best model not found: {BEST_MODEL_PATH}")
@@ -153,7 +193,37 @@ def evaluate_model() -> None:
     print(f"Device: {DEVICE}")
 
     model = YOLO(str(BEST_MODEL_PATH))
-    samples = collect_samples(split_dir, class_names)
+    model_class_names = load_model_class_names(model)
+
+    if EXCLUDED_CLASSES:
+        print(f"Excluding classes from evaluation: {sorted(EXCLUDED_CLASSES)}")
+
+    active_class_names = [
+        class_name for class_name in model_class_names if class_name not in EXCLUDED_CLASSES
+    ]
+    active_class_ids = [
+        class_id for class_id, class_name in enumerate(model_class_names)
+        if class_name not in EXCLUDED_CLASSES
+    ]
+    class_name_to_new_id = {
+        class_name: class_id for class_id, class_name in enumerate(active_class_names)
+    }
+
+    dataset_class_names = [
+        class_name for class_name in configured_class_names if class_name in active_class_names
+    ]
+
+    missing_dataset_classes = [
+        class_name for class_name in dataset_class_names if class_name not in model_class_names
+    ]
+    if missing_dataset_classes:
+        raise ValueError(
+            "These dataset classes are missing in model.names: "
+            f"{missing_dataset_classes}"
+        )
+
+    # samples = collect_samples(split_dir, class_names)
+    samples = collect_named_samples(split_dir, dataset_class_names)
 
     if not samples:
         raise ValueError(
@@ -169,7 +239,7 @@ def evaluate_model() -> None:
     print(f"Found {len(samples)} images.")
     print("Starting evaluation...")
 
-    for i, (image_path, true_class_id) in enumerate(samples, start=1):
+    for i, (image_path, true_class_name) in enumerate(samples, start=1):
         results = model.predict(
             source=str(image_path),
             verbose=False,
@@ -183,6 +253,7 @@ def evaluate_model() -> None:
             raise ValueError(f"No probabilities returned for image: {image_path}")
 
         prob_vector = probs.data.detach().cpu().numpy().astype(float)
+        prob_vector = prob_vector[active_class_ids]
 
         # На випадок чисельних артефактів
         prob_sum = prob_vector.sum()
@@ -196,7 +267,7 @@ def evaluate_model() -> None:
         # Keep enough predictions for top-3 reporting while respecting configured TOP_K.
         top_indices = sorted_indices[:max(TOP_K, 3)].tolist()
 
-        y_true.append(true_class_id)
+        y_true.append(class_name_to_new_id[true_class_name])
         y_pred.append(pred_class_id)
         top_k_predictions.append(top_indices)
         y_score.append(prob_vector.tolist())
@@ -215,25 +286,29 @@ def evaluate_model() -> None:
     report_df = build_classification_report(
         y_true=y_true,
         y_pred=y_pred,
-        class_names=class_names,
+        # class_names=class_names,
+        class_names=active_class_names,
     )
 
     cm_df = build_confusion_matrix_df(
         y_true=y_true,
         y_pred=y_pred,
-        class_names=class_names,
+        # class_names=class_names,
+        class_names=active_class_names,
     )
 
     cm_norm_df = build_confusion_matrix_normalized_df(
         y_true=y_true,
         y_pred=y_pred,
-        class_names=class_names,
+        # class_names=class_names,
+        class_names=active_class_names,
     )
 
     roc_df, auc_summary, curve_data = compute_multiclass_roc_auc(
         y_true=y_true,
         y_score=y_score_np,
-        class_names=class_names,
+        # class_names=class_names,
+        class_names=active_class_names,
     )
 
     metrics.update(auc_summary)

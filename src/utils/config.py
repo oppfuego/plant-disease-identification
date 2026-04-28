@@ -16,7 +16,8 @@ TEST_DIR = DATASET_DIR / "test"
 MODELS_DIR = BASE_DIR / "models"
 RUNS_DIR = BASE_DIR / "runs"
 
-NUM_CLASSES = 27
+# NUM_CLASSES = 27
+NUM_CLASSES = 24
 
 IMG_SIZE = 512
 BATCH_SIZE = 16
@@ -35,7 +36,8 @@ VAL_RATIO = 0.1
 TEST_RATIO = 0.2
 
 YOLO_MODEL_WEIGHTS = "yolo11m-cls.pt"
-EXPERIMENT_NAME = "plant_disease_cls_merged_v3_20ep_512"
+# EXPERIMENT_NAME = "plant_disease_cls_merged_v3_20ep_512"
+EXPERIMENT_NAME = "plant_disease_cls_merged_v4_20ep_512"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
